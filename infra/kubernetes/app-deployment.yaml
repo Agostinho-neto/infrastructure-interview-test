@@ -36,7 +36,7 @@ spec:
               app: interview-app
       containers:
         - name: app
-          image: infrastructure-interview-app:local
+          image: netoagostinho10/infrastructure-interview-app:1.0.0@sha256:bbcdfedc0e8cca270b43da30950ccf1b47cf9b84e01e67c983417b24664f91c7
           imagePullPolicy: IfNotPresent
 
           securityContext:
