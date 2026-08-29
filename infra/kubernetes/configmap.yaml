@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: infrastructure-interview
+data:
+  TYPEORM_CONNECTION: mysql
+  TYPEORM_HOST: mariadb
+  TYPEORM_PORT: "3306"
+  TYPEORM_DATABASE: test
+  TYPEORM_SYNCHRONIZE: "true"
+  TYPEORM_ENTITIES: "src/entity/*.js"
