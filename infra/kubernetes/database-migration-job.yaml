@@ -1,0 +1,56 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: database-migration
+  namespace: infrastructure-interview
+spec:
+  backoffLimit: 2
+
+  template:
+    metadata:
+      labels:
+        app: database-migration
+    spec:
+      restartPolicy: Never
+
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+
+      containers:
+        - name: migration
+          image: netoagostinho10/infrastructure-interview-app:1.1.0@sha256:023a7f89037de41f7764caecc268b2673a0115870d1d1d6ba2bd37551a51cfad
+          imagePullPolicy: IfNotPresent
+
+          command:
+            - node
+            - node_modules/typeorm/cli.js
+            - migration:run
+
+          envFrom:
+            - configMapRef:
+                name: app-config
+
+          env:
+            - name: TYPEORM_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: database-credentials
+                  key: username
+
+            - name: TYPEORM_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: database-credentials
+                  key: password
+
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
