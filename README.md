@@ -62,3 +62,7 @@ While not all of these need to be implemented, the more of them that are complet
 3. run `yarn typeorm migration:run`
 4. open `http://localhost:3000/posts` and see an empty list
 5. test with `curl`, `postman` or similar tools
+
+## Infrastructure
+
+Kubernetes architecture, deployment instructions and production considerations are documented in [infra/README.md](infra/README.md).

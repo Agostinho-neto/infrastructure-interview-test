@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: interview-app
+  namespace: infrastructure-interview
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: interview-app
