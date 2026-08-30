@@ -13,7 +13,7 @@ $repositoryRoot = Split-Path -Parent $PSScriptRoot
 
 $requiredCommands = @(
     "docker",
-    "kind",
+    "terraform",
     "kubectl",
     "node"
 )
@@ -26,26 +26,21 @@ foreach ($command in $requiredCommands) {
 
 Write-Host "All required commands are available."
 
-$clusterConfig = Join-Path $repositoryRoot "infra\kind\cluster.yaml"
+$terraformDirectory = Join-Path $repositoryRoot "infra\terraform\kind"
 $kubeContext = "kind-$clusterName"
 
-$existingClusters = @(kind get clusters)
+Write-Host "Provisioning Kind cluster with Terraform..."
+
+terraform "-chdir=$terraformDirectory" init -input=false
 
 if ($LASTEXITCODE -ne 0) {
-    throw "Unable to list Kind clusters. Check whether Docker Desktop is running."
+    throw "Terraform initialization failed."
 }
 
-if ($existingClusters -contains $clusterName) {
-    Write-Host "Kind cluster '$clusterName' already exists."
-}
-else {
-    Write-Host "Creating Kind cluster '$clusterName'..."
+terraform "-chdir=$terraformDirectory" apply -auto-approve -input=false
 
-    kind create cluster --config $clusterConfig
-
-    if ($LASTEXITCODE -ne 0) {
-        throw "Kind cluster creation failed."
-    }
+if ($LASTEXITCODE -ne 0) {
+    throw "Terraform could not provision the Kind cluster."
 }
 
 Write-Host "Waiting for Kubernetes nodes to become ready..."

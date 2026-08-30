@@ -6,7 +6,7 @@ The environment was created to reproduce the main production concerns of the exe
 
 ## Structure
 
-- `kind/cluster.yaml`: creates the local cluster with one control-plane and three workers.
+- `terraform/kind/`: provisions the local Kind cluster with one control-plane and three workers.
 - `kubernetes/namespace.yaml`: creates an isolated namespace for the application.
 - `kubernetes/configmap.yaml`: stores non-sensitive application configuration.
 - `kubernetes/mariadb-service.yaml`: provides an internal address for the database.
@@ -19,27 +19,29 @@ The environment was created to reproduce the main production concerns of the exe
 ## Requirements
 
 - Docker Desktop
-- Kind
+- Terraform
 - kubectl
+- Node.js
 
 ## Automated local deployment
 
 From the repository root, execute:
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\deploy-local.ps1
+.\scripts\deploy-local.ps1
 ```
 
-The script checks the required tools, creates the Kind cluster when necessary, deploys MariaDB, runs database migrations, deploys the application and executes the smoke tests.
+The script checks the required tools, provisions the Kind cluster with Terraform, deploys MariaDB, runs database migrations, deploys the application and executes the smoke tests.
 
 The default database credentials are intended only for the local environment. Existing credentials in the cluster are preserved.
 
 ## Manual deployment
 
-Create the cluster:
+Initialize Terraform and create the cluster:
 
 ```bash
-kind create cluster --config infra/kind/cluster.yaml
+terraform -chdir=infra/terraform/kind init
+terraform -chdir=infra/terraform/kind apply
 ```
 
 Confirm that the nodes are ready and check their zone labels:
@@ -140,11 +142,12 @@ This setup demonstrates the deployment locally, but some components would be dif
 - NodePort is suitable for this local test. A production environment would normally use an Ingress or LoadBalancer with TLS.
 - Kind zone labels only simulate availability zones. Real resilience requires nodes in separate physical zones.
 - Migrations should run as a controlled step in the deployment pipeline before the new application version is released.
+- Terraform state is stored locally for this exercise. A production environment should use a remote backend with access control and state locking.
 
 ## Cleanup
 
 Remove the local cluster and all resources created inside it:
 
 ```bash
-kind delete cluster --name infrastructure-interview
+terraform -chdir=infra/terraform/kind destroy
 ```

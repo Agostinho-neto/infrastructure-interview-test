@@ -1,3 +1,13 @@
 node_modules
 src/**/*.js
 src/**/*.js.map
+
+
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+infra/terraform/kind/infrastructure-interview-config
