@@ -48,6 +48,19 @@ else {
     }
 }
 
+Write-Host "Waiting for Kubernetes nodes to become ready..."
+
+kubectl wait `
+    --for=condition=Ready `
+    nodes `
+    --all `
+    --context $kubeContext `
+    --timeout=180s
+
+if ($LASTEXITCODE -ne 0) {
+    throw "Kubernetes nodes did not become ready within the expected time."
+}
+
 kubectl get nodes --context $kubeContext
 
 if ($LASTEXITCODE -ne 0) {
@@ -71,7 +84,8 @@ $secretName = "database-credentials"
 $existingSecret = kubectl get secret $secretName `
     --namespace $namespace `
     --context $kubeContext `
-    --output name 2>$null
+    --output name `
+    --ignore-not-found=true
 
 if ([string]::IsNullOrWhiteSpace($existingSecret)) {
     Write-Host "Creating local database credentials..."
