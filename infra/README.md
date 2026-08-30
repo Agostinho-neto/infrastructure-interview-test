@@ -22,7 +22,19 @@ The environment was created to reproduce the main production concerns of the exe
 - Kind
 - kubectl
 
-## Running locally
+## Automated local deployment
+
+From the repository root, execute:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\deploy-local.ps1
+```
+
+The script checks the required tools, creates the Kind cluster when necessary, deploys MariaDB, runs database migrations, deploys the application and executes the smoke tests.
+
+The default database credentials are intended only for the local environment. Existing credentials in the cluster are preserved.
+
+## Manual deployment
 
 Create the cluster:
 
