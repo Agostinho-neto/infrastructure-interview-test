@@ -90,6 +90,25 @@ kubectl get pdb -n infrastructure-interview
 
 The pod list should show the three application replicas distributed between workers in different zones.
 
+## Smoke test
+
+With the application running, execute:
+
+```bash
+node tests/smoke-test.js
+```
+
+The test checks that:
+
+- `GET /posts` returns a list.
+- `POST /posts` creates a post.
+- `GET /posts/:id` returns the created post.
+- An unknown post returns HTTP 404.
+
+The target address defaults to `http://localhost:8080`. It can be changed with the `BASE_URL` environment variable.
+
+Each execution creates one post in the local database because the sample application does not provide a delete endpoint.
+
 ## Main decisions
 
 - The application image is public and pinned by tag and digest, making the deployed content reproducible.
