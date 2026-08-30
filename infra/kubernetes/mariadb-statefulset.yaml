@@ -53,8 +53,11 @@ spec:
                   key: root-password
 
           readinessProbe:
-            tcpSocket:
-              port: mysql
+            exec:
+              command:
+                - /usr/local/bin/healthcheck.sh
+                - --connect
+                - --innodb_initialized
             initialDelaySeconds: 10
             periodSeconds: 5
 
