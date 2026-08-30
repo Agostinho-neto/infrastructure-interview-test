@@ -145,6 +145,27 @@ This setup demonstrates the deployment locally, but some components would be dif
 - Migrations should run as a controlled step in the deployment pipeline before the new application version is released.
 - Terraform state is stored locally for this exercise. A production environment should use a remote backend with access control and state locking.
 
+## Validation
+
+The complete environment was validated from a clean local setup using:
+
+```powershell
+.\scripts\deploy-local.ps1
+```
+
+The validation confirmed:
+
+- Terraform created one control-plane and three worker nodes.
+- The application replicas were distributed across the three simulated zones.
+- The database migration completed successfully.
+- All Kubernetes workloads became ready without restarts.
+- The functional smoke tests passed.
+- A second execution completed without pending migrations or infrastructure changes.
+
+The published application image is available at [Docker Hub](https://hub.docker.com/r/netoagostinho10/infrastructure-interview-app) and is pinned by digest in the Kubernetes manifests.
+
+Validated locally on Windows AMD64 with Docker Desktop.
+
 ## Cleanup
 
 Remove the local cluster and all resources created inside it:
