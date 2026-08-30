@@ -138,6 +138,7 @@ Each execution creates one post in the local database because the sample applica
 This setup demonstrates the deployment locally, but some components would be different in a real production environment:
 
 - The database currently has one replica and is not highly available. In production, a managed multi-zone database with backups would be preferred.
+- CPU, memory and the 1Gi database volume are local test values. Production sizing should be based on load tests, observed usage, data growth, backups and storage expansion.
 - Credentials should come from a secret manager, such as Azure Key Vault, instead of being created manually.
 - NodePort is suitable for this local test. A production environment would normally use an Ingress or LoadBalancer with TLS.
 - Kind zone labels only simulate availability zones. Real resilience requires nodes in separate physical zones.
